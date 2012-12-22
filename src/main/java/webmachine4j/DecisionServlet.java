@@ -1,5 +1,7 @@
 package webmachine4j;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
@@ -11,6 +13,8 @@ public class DecisionServlet extends FrameworkServlet {
 	private static ResourceBundle LOCAL_STRINGS = ResourceBundle
 			.getBundle(LSTRING_FILE);
 
+	private Map<String, String> handlerMap = new HashMap<String, String>();
+
 	/**
 	 * 
 	 */
@@ -19,14 +23,32 @@ public class DecisionServlet extends FrameworkServlet {
 	@Override
 	protected void processRequest(HttpServletRequest request,
 			HttpServletResponse response) {
+		String _method = request.getMethod();
+		WebmachineResource resource = null;
+
+		isServiceAvailable(resource, request, response);
 		// TODO Auto-generated method stub
 
 	}
-	protected void methodNotAllowed(HttpServletRequest request,
-			HttpServletResponse response) {
+
+	private void isServiceAvailable(WebmachineResource resource,
+			HttpServletRequest request, HttpServletResponse response) {
+		try {
+			resource.serviceAvailable(request, response);
+		} catch (WebmachineStatus status) {
+
+		}
+	}
+
+	private void sendResponse(HttpServletResponse response, int httpStatus,
+			String message) {
+
+	}
+
+	protected void methodNotAllowed() {
 		int errorCode = HttpServletResponse.SC_METHOD_NOT_ALLOWED;
 	}
-	
+
 	protected void notAcceptable(HttpServletRequest request,
 			HttpServletResponse response) {
 		int errorCode = HttpServletResponse.SC_NOT_ACCEPTABLE;
@@ -61,8 +83,6 @@ public class DecisionServlet extends FrameworkServlet {
 			HttpServletResponse response) {
 		// TODO Auto-generated method stub
 	}
-
-
 
 	protected void doMethod(HttpServletRequest request,
 			HttpServletResponse response) {
