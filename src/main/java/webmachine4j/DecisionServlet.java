@@ -1,15 +1,8 @@
 package webmachine4j;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.collections.Transformer;
-import org.apache.commons.lang3.StringUtils;
-import webmachine4j.util.Tuple;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.lang.reflect.Method;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -31,173 +24,478 @@ public class DecisionServlet extends FrameworkServlet {
         WebmachineResource resource = null;
 
         isServiceAvailable(resource, request, response);
-        isKnownMethod(resource, request, response);
-        isURITooLong(resource, request, response);
-        isMethodAllowed(resource, request, response);
-        isRequestMalformed(resource, request, response);
-        isAuthorized(resource, request, response);
-        isForbidden(resource, request, response);
-        hasUnknownContentHeader(resource, request, response);
-        hasUnknownContentType(resource, request, response);
-        isRequestEntityTooLarge(resource, request, response);
-
-        if (method.equals(Methods.OPTIONS)) {
-            response.setStatus(HttpServletResponse.SC_OK);
-            return;
-        }
-
-        doesAcceptExist(resource, request, response);
-        doesAcceptLanguageExist(resourse, request, response);
-        doesAcceptCharsetExist(resourse, request, response);
-        doesAcceptEncodingExist(resourse, request, response);
-
-        if (doesResourceExist(resource, request, response)) {
-
-        } else {
-            doesIfMatchExist(resource, request, response);
-            if (method.equals(Methods.PUT)) {
-                if (doesServerDesireDifferentURI(request, response)) {
-                    movedPermanently(request, response);
-                } else {
-
-                }
-            } else {
-
-            }
-        }
-    }
-
-    private void doesAcceptExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        //Throw an exception if it exists and is not valid, otherwise continue
-        String acceptHeader = StringUtils.trimToNull(request.getHeader("Accept"));
-        if (acceptHeader != null) {
-            List<String> contentTypesProvided = CollectionUtils.collect(resource.contentTypesProvided(), new Transformer() {
-                @Override
-                public Object transform(Object input) {
-                    ((Tuple<String, Method>) input).getX();
-                }
-            };
-
-            //TODO: Need a proper parser for this
-            String[] acceptValues = StringUtils.split(acceptHeader, ",");
-            if (!contentTypesProvided.containsAll(acceptValues))
-                notAcceptable(request, response);
-        }
-    }
-
-    private void doesAcceptLanguageExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        //Throw an exception if it exists and is not valid, otherwise continue
-        String acceptLanguageHeader = StringUtils.trimToNull(request.getHeader("Accept-Language"));
-        if (acceptLanguageHeader != null) {
-            List<String> languagesProvided = resource.getLanguagesProvided();
-
-            //If empty, skip
-            if (!languagesProvided.isEmpty()) {
-                //TODO: Need a proper parser for this
-                String[] acceptLanguageValues = StringUtils.split(acceptHeader, ",");
-                if (!languagesProvided.contains(acceptLanguageValues))
-                    notAcceptable(request, response);
-            }
-        }
-    }
-
-    private void doesAcceptCharsetExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        //Throw an exception if it exists and is not valid, otherwise continue
-        String acceptCharsetHeader = StringUtils.trimToNull(request.getHeader("Accept-Charset"));
-        if (acceptCharsetHeader != null) {
-            List<String> charsetsProvided = resource.getCharsetsProvided();
-
-            //If empty, skip
-            if (!charsetsProvided.isEmpty()) {
-                //TODO: Need a proper parser for this
-                String[] acceptCharsetValues = StringUtils.split(acceptCharsetHeader, ",");
-                if (!charsetsProvided.contains(acceptCharsetValues))
-                    notAcceptable(request, response);
-            }
-        }
-    }
-
-    private void doesResourceExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (!resource.resourceExists())
-            notFound(request, response);
-    }
-
-    private void doesAcceptEncodingExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        //Throw an exception if it exists and is not valid, otherwise continue
-//        String acceptEncodingHeader = StringUtils.trimToNull(request.getHeader("Accept-Encoding"));
-//        if (acceptEncodingHeader != null) {
-//            List<String> encodingsProvided = resource.getEncodingsProvided();
-//
-//            //If empty, skip
-//            if (!charsetsProvided.isEmpty()) {
-//                //TODO: Need a proper parser for this
-//                String[] acceptCharsetValues = StringUtils.split(acceptCharsetHeader, ",");
-//                if (!charsetsProvided.contains(acceptCharsetValues))
-//                    notAcceptable(request, response);
-//            }
-//        }
     }
 
     private void isServiceAvailable(WebmachineResource resource,
                                     HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isKnownMethod(resource, request, response);
+
+        sendServiceUnavailable(request, response);
     }
 
     private void isKnownMethod(WebmachineResource resource,
                                HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isURITooLong(resource, request, response);
+
+        sendNotImplemented(request, response);
     }
 
-    private void sendResponse(HttpServletResponse response, int httpStatus,
-                              String message) {
+    private void isURITooLong(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isMethodAllowed(resource, request, response);
+
+        sendRequestURITooLong(request, response);
+    }
+
+    private void isMethodAllowed(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isRequestMalformed(resource, request, response);
+
+        sendMethodNotAllowed(request, response);
+    }
+
+    private void isRequestMalformed(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isAuthorized(resource, request, response);
+
+        sendBadRequest(request, response);
+    }
+
+    private void isAuthorized(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isForbidden(resource, request, response);
+
+        sendUnauthorized(request, response);
+    }
+
+    private void isForbidden(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            hasUnknownContentHeader(resource, request, response);
+
+        sendForbidden(request, response);
+    }
+
+    private void hasUnknownContentHeader(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            hasUnknownContentType(resource, request, response);
+
+        sendNotImplemented(request, response);
+    }
+
+    private void hasUnknownContentType(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isRequestEntityTooLarge(resource, request, response);
+
+        sendUnsupportedMediaType(request, response);
+    }
+
+    private void isRequestEntityTooLarge(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isOptionsMethod(resource, request, response);
+
+        sendRequestEntityTooLarge(request, response);
+    }
+
+    private void isOptionsMethod(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesAcceptExist(resource, request, response);
+
+        sendOK(request, response);
+    }
+
+    private void doesAcceptExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isAcceptableMediaTypeAvailable(resource, request, response);
+        else
+            doesAcceptLanguageExist(resource, request, response);
+    }
+
+    private void isAcceptableMediaTypeAvailable(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesAcceptLanguageExist(resource, request, response);
+        else
+            sendNotAcceptable(request, response);
+    }
+
+    private void doesAcceptLanguageExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isAcceptableLanguageAvailable(resource, request, response);
+        else
+            doesAcceptCharsetExist(resource, request, response);
+    }
+
+    private void isAcceptableLanguageAvailable(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesAcceptCharsetExist(resource, request, response);
+        else
+            sendNotAcceptable(request, response);
+    }
+
+    private void doesAcceptCharsetExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isAcceptableCharsetAvailable(resource, request, response);
+        else
+            doesAcceptEncodingExist(resource, request, response);
+    }
+
+    private void isAcceptableCharsetAvailable(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesAcceptEncodingExist(resource, request, response);
+        else
+            sendNotAcceptable(request, response);
+    }
+
+    private void doesAcceptEncodingExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isAcceptableEncodingAvailable(resource, request, response);
+        else
+            sendNotAcceptable(request, response);
+    }
+
+    private void isAcceptableEncodingAvailable(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesResourceExist(resource, request, response);
+        else
+            sendNotAcceptable(request, response);
+    }
+
+    private void doesResourceExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            hasIfMatch(resource, request, response);
+        else
+            hasIfMatchStar_H7(resource, request, response);
+    }
+
+    private void hasIfMatchStar_H7(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendPreconditionFailed(request, response);
+        else
+            isPutMethod_I7(resource, request, response);
+    }
+
+    private void hasIfMatch(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            hasIfMatchStarExist_G9(resource, request, response);
+        else
+            hasIfUnmodifiedSince(resource, request, response);
+    }
+
+    private void hasIfMatchStarExist_G9(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            hasIfUnmodifiedSince(resource, request, response);
+        else
+            hasEtagInIfMatch(resource, request, response);
+    }
+
+    private void hasEtagInIfMatch(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            hasIfUnmodifiedSince(resource, request, response);
+        else
+            sendPreconditionFailed(request, response);
+    }
+
+    private void hasIfUnmodifiedSince(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isIfUnmodifiedSinceValid(resource, request, response);
+        else
+            hasIfNoneMatch(resource, request, response);
+    }
+
+    private void isIfUnmodifiedSinceValid(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isLastModifiedGreaterThanIfUnmodifiedSince(resource, request, response);
+        else
+            hasIfNoneMatch(resource, request, response);
+    }
+
+    private void isLastModifiedGreaterThanIfUnmodifiedSince(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendPreconditionFailed(request, response);
+        else
+            hasIfNoneMatch(resource, request, response);
+    }
+
+    private void hasIfNoneMatch(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            hasIfNoneMatchStar(resource, request, response);
+        else
+            hasIfModifiedSince(resource, request, response);
+    }
+
+    private void hasIfNoneMatchStar(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isGetOrHeadMethod(resource, request, response);
+        else
+            hasEtagInIfNoneMatch(resource, request, response);
+    }
+
+    private void isGetOrHeadMethod(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendNotModified(request, response);
+        else
+            sendPreconditionFailed(request, response);
+    }
+
+    private void hasEtagInIfNoneMatch(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isGetOrHeadMethod(resource, request, response);
+        else
+            hasIfModifiedSince(resource, request, response);
+    }
+
+    private void hasIfModifiedSince(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isIfModifiedSinceValid(resource, request, response);
+        else
+            isDeleteMethod(resource, request, response);
+    }
+
+    private void isIfModifiedSinceValid(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isIfModifiedSinceGreaterThanNow(resource, request, response);
+        else
+            isDeleteMethod(resource, request, response);
+    }
+
+    private void isIfModifiedSinceGreaterThanNow(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isDeleteMethod(resource, request, response);
+        else
+            isLastModifiedGreaterThanIfModifiedSince(resource, request, response);
+    }
+
+    private void isLastModifiedGreaterThanIfModifiedSince(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isDeleteMethod(resource, request, response);
+        else
+            sendNotModified(request, response);
+    }
+
+    private void isDeleteMethod(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isDeleteEnacted(resource, request, response);
+        else
+            isPostMethod_N16(resource, request, response);
+    }
+
+    private void isPostMethod_N16(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isRedirect(resource, request, response);
+        else
+            isPutMethod_O16(resource, request, response);
+    }
+
+    private void isPutMethod_O16(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesConflictExist_O14(resource, request, response);
+        else
+            areThereMultipleRepresentations(resource, request, response);
+    }
+
+    private void doesConflictExist_O14(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendConflict(request, response);
+        else
+            isNewResource(resource, request, response);
+    }
+
+    private void isDeleteEnacted(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesResponseIncludeAnEntity(resource, request, response);
+        else
+            sendAccepted(request, response);
+    }
+
+    private void isPutMethod_I7(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesServerDesireDifferentURI(resource, request, response);
+        else
+            didResourcePreviouslyExist(resource, request, response);
+    }
+
+    private void doesServerDesireDifferentURI(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendMovedPermanently(request, response);
+        else
+            doesConflictExist(resource, request, response);
+    }
+
+    private void didResourcePreviouslyExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            didResourceMovePermanently(resource, request, response);
+        else
+            isPostMethod_L7(resource, request, response);
+    }
+
+    private void isPostMethod_L7(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesServerPermitPostToMissingResource_M7(resource, request, response);
+        else
+            sendNotFound(request, response);
+    }
+
+    private void doesServerPermitPostToMissingResource_M7(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isRedirect(resource, request, response);
+        else
+            sendNotFound(request, response);
+    }
+
+    private void didResourceMovePermanently(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendMovedPermanently(request, response);
+        else
+            didResourceMoveTemporarily(resource, request, response);
+    }
+
+    private void didResourceMoveTemporarily(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendMovedTemporarily(request, response);
+        else
+            isPostMethodM5(resource, request, response);
+    }
+
+    private void isPostMethodM5(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            doesServerPermitPostToMissingResource(resource, request, response);
+        else
+            sendGone(request, response);
+    }
+
+    private void doesServerPermitPostToMissingResource(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendSeeOther(request, response);
+        else
+            isNewResource(resource, request, response);
+    }
+
+    private void isRedirect(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            isRedirect(resource, request, response);
+        else
+            sendGone(request, response);
+    }
+
+    private void doesConflictExist(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendConflict(request, response);
+        else
+            isNewResource(resource, request, response);
+    }
+
+    private void isNewResource(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendCreated(request, response);
+        else
+            doesResponseIncludeAnEntity(resource, request, response);
+    }
+
+    private void doesResponseIncludeAnEntity(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            areThereMultipleRepresentations(resource, request, response);
+        else
+            sendNoContent(request, response);
+    }
+
+    private void areThereMultipleRepresentations(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (true)
+            sendMultipleChoices(request, response);
+        else
+            sendOK(request, response);
+    }
+
+    private void sendServiceUnavailable(HttpServletRequest request, HttpServletResponse response) {
 
     }
 
-    protected void methodNotAllowed() {
-        int errorCode = HttpServletResponse.SC_METHOD_NOT_ALLOWED;
+    private void sendNotImplemented(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void notAcceptable(HttpServletRequest request,
-                                 HttpServletResponse response) {
-        int errorCode = HttpServletResponse.SC_NOT_ACCEPTABLE;
+    private void sendRequestURITooLong(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void ifMatch(HttpServletRequest request,
-                           HttpServletResponse response) {
-        int errorCode = HttpServletResponse.SC_PRECONDITION_FAILED;
+    private void sendMethodNotAllowed(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void ifUnmodifiedSince(HttpServletRequest request,
-                                     HttpServletResponse response) {
-        int errorCode = HttpServletResponse.SC_PRECONDITION_FAILED;
+    private void sendBadRequest(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void ifNoneMatch(HttpServletRequest request,
-                               HttpServletResponse response) {
-        int errorCode = HttpServletResponse.SC_PRECONDITION_FAILED;
+    private void sendUnauthorized(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void notModified(HttpServletRequest request,
-                               HttpServletResponse response) {
-        int errorCode = HttpServletResponse.SC_NOT_MODIFIED;
+    private void sendForbidden(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void preconditionFailed(HttpServletRequest request,
-                                      HttpServletResponse response) {
-        int errorCode = HttpServletResponse.SC_PRECONDITION_FAILED;
+    private void sendUnsupportedMediaType(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void isPostToMissingResource(HttpServletRequest request,
-                                           HttpServletResponse response) {
-        // TODO Auto-generated method stub
+    private void sendRequestEntityTooLarge(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void doMethod(HttpServletRequest request,
-                            HttpServletResponse response) {
-        // TODO Auto-generated method stub
+    private void sendOK(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
-    protected void putResource(HttpServletRequest request,
-                               HttpServletResponse response) {
-        // TODO Auto-generated method stub
+    private void sendNotAcceptable(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendPreconditionFailed(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendMovedPermanently(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendMovedTemporarily(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendGone(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendConflict(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendCreated(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendSeeOther(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendNotFound(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendNoContent(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendAccepted(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendMultipleChoices(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void sendNotModified(HttpServletRequest request, HttpServletResponse response) {
+
     }
 
 }
