@@ -2,9 +2,7 @@ package webmachine4j;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 
 public class DecisionServlet extends FrameworkServlet {
 
@@ -16,6 +14,9 @@ public class DecisionServlet extends FrameworkServlet {
     private static ResourceBundle LOCAL_STRINGS = ResourceBundle
             .getBundle(LSTRING_FILE);
     private Map<String, String> handlerMap = new HashMap<String, String>();
+    private static final List<String> KNOWN_METHODS = Arrays.asList(new String[]{
+            "HEAD", "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+    });
 
     @Override
     protected void processRequest(HttpServletRequest request,
@@ -28,7 +29,7 @@ public class DecisionServlet extends FrameworkServlet {
 
     private void isServiceAvailable(WebmachineResource resource,
                                     HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (resource.serviceAvailable())
             isKnownMethod(resource, request, response);
 
         sendServiceUnavailable(request, response);
@@ -36,72 +37,73 @@ public class DecisionServlet extends FrameworkServlet {
 
     private void isKnownMethod(WebmachineResource resource,
                                HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (KNOWN_METHODS.contains(request.getMethod()))
             isURITooLong(resource, request, response);
 
         sendNotImplemented(request, response);
     }
 
     private void isURITooLong(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (resource.uriTooLong())
             isMethodAllowed(resource, request, response);
 
         sendRequestURITooLong(request, response);
     }
 
     private void isMethodAllowed(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (resource.getAllowedMethods().contains(request.getMethod()))
             isRequestMalformed(resource, request, response);
 
         sendMethodNotAllowed(request, response);
     }
 
     private void isRequestMalformed(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (!resource.malformedRequest())
             isAuthorized(resource, request, response);
 
         sendBadRequest(request, response);
     }
 
     private void isAuthorized(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (resource.isAuthorized())
             isForbidden(resource, request, response);
 
         sendUnauthorized(request, response);
     }
 
     private void isForbidden(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
-            hasUnknownContentHeader(resource, request, response);
+        if (!resource.forbidden())
+            hasValidContentHeaders(resource, request, response);
 
         sendForbidden(request, response);
     }
 
-    private void hasUnknownContentHeader(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
-            hasUnknownContentType(resource, request, response);
+    private void hasValidContentHeaders(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (resource.validContentHeaders())
+            hasKnownContentType(resource, request, response);
 
         sendNotImplemented(request, response);
     }
 
-    private void hasUnknownContentType(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+    private void hasKnownContentType(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
+        if (resource.knownContentType())
             isRequestEntityTooLarge(resource, request, response);
 
         sendUnsupportedMediaType(request, response);
     }
 
     private void isRequestEntityTooLarge(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (resource.validEntityLength())
             isOptionsMethod(resource, request, response);
 
         sendRequestEntityTooLarge(request, response);
     }
 
     private void isOptionsMethod(WebmachineResource resource, HttpServletRequest request, HttpServletResponse response) {
-        if (true)
+        if (false)
             doesAcceptExist(resource, request, response);
 
+        //set allow header to allowed methods
         sendOK(request, response);
     }
 
@@ -427,7 +429,7 @@ public class DecisionServlet extends FrameworkServlet {
     }
 
     private void sendUnauthorized(HttpServletRequest request, HttpServletResponse response) {
-
+        String header = "www-authenticate";
     }
 
     private void sendForbidden(HttpServletRequest request, HttpServletResponse response) {
